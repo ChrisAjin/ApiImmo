@@ -99,3 +99,41 @@ def stats_form(request):
                 }
 
     return render(request, "stats_form.html", {"stats": stats, "error": error})
+
+def add_bienici_announcement(request):
+    if request.method == "POST":
+        url = request.POST.get("url")
+        if not url:
+            return render(request, "add_announcement.html", {"error": "URL is required"})
+
+        try:
+            ad_id = url.split('/')[-1]
+            api_url = f"https://www.bienici.com/realEstateAd.json?id={ad_id}"
+
+            response = requests.get(api_url)
+            if response.status_code != 200:
+                return render(request, "add_announcement.html", {"error": "Failed to fetch data from BienIci API"})
+
+            ad_data = response.json()
+            data_set_ad, created = DataSet.objects.get_or_create(
+                url=url,
+                defaults={
+                    'price': ad_data.get('price'),
+                    'charges': ad_data.get('charges'),
+                    'department': ad_data.get('department'),
+                    'city': ad_data.get('city'),
+                    'postal_code': ad_data.get('postal_code'),
+                }
+            )
+
+            if created:
+                message = "Announcement added successfully!"
+            else:
+                message = "This announcement already exists in the database."
+
+            return render(request, "add_announcement.html", {"message": message})
+
+        except Exception as e:
+            return render(request, "add_announcement.html", {"error": str(e)})
+
+    return render(request, "add_announcement.html")

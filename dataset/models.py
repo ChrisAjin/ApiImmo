@@ -1,6 +1,7 @@
 from django.db import models
 
 class DataSet(models.Model):
+    url = models.URLField(unique=True) 
     price = models.FloatField(null=True, blank=True)
     charges = models.FloatField(null=True, blank=True)
     department = models.CharField(max_length=10, null=True, blank=True)  # Corrigez l'attribut `department`
