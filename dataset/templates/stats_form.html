@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Statistics Form</title>
+</head>
+<body>
+    <h1>Property Charges Statistics</h1>
+
+    <form method="POST">
+        {% csrf_token %}
+        <label for="department">Department:</label><br>
+        <input type="text" id="department" name="department" placeholder="Enter department"><br><br>
+
+        <label for="city">City:</label><br>
+        <input type="text" id="city" name="city" placeholder="Enter city"><br><br>
+
+        <label for="postal_code">Postal Code:</label><br>
+        <input type="text" id="postal_code" name="postal_code" placeholder="Enter postal code"><br><br>
+
+        <button type="submit">Get Statistics</button>
+    </form>
+
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+    {% endif %}
+
+    {% if stats %}
+        <h2>Statistics</h2>
+        <p><strong>Average Charges:</strong> {{ stats.average_charges }}</p>
+        <p><strong>10% Quantile:</strong> {{ stats.quantile_10 }}</p>
+        <p><strong>90% Quantile:</strong> {{ stats.quantile_90 }}</p>
+    {% endif %}
+</body>
+</html>
